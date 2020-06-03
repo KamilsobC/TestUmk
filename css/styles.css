@@ -48,9 +48,18 @@
 	justify-content: center;
 }
 
-.hex:hover{
+.enemy:hover{
 	background-color: red;
+	opacity: 25%;
+	border-radius:90%;
 }
+
+.hero:hover{
+	background-color: green;
+	opacity: 25%;
+	border-radius: 90%;
+}
+
 
 #herohp,#enemyhp{
 	background-color: greenyellow;

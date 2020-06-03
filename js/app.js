@@ -97,7 +97,7 @@ class BattleManager{
     constructor(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r){
         this.enemy = new Enemy('goblin',100,enemy_pos_q,enemy_pos_r);
         this.hero = new Hero('hero',10,hero_pos_q,hero_pos_r,1000);
-       
+        this.lastclicked =null;
     }
     updateMapInfo(tiles){
         this.map = new Map(tiles);
@@ -116,7 +116,7 @@ class BattleManager{
 const TREE =createElementFromHTML( "<div class=\"thing\"> <div class=\"tree \"> <img src=\'img/tree.png\'/> </div> </div>");
 const HERO = createElementFromHTML( "<div class=\"character\" > <div class=\"hero \"><div class='hpbg'><div id='herohp'>100%</div></div><img src=\'img/hero.png\'/> </div> </div>");
 const ENEMY = createElementFromHTML( "<div class=\"character\"  > <div class=\"enemy \"><div class='hpbg'><div id='enemyhp'>100</div></div> <img src=\'img/enemy.png\'/> </div> </div>");
-const EMPTY = createElementFromHTML("<div ></div>")
+const EMPTY = createElementFromHTML("<div class=\"nothing\"  ><img src=\'img/empty.png\'/></div>")
 
 function nextTurnUpdate(){
     //TODO
@@ -190,7 +190,7 @@ function createElementFromHTML(htmlString) {
 		return hex.type;
 	});
 
-
+    alert('press generate map');
 	// Create button which randomises the terrain
 	S('#button-8-terrain').on('click',function(){
         function generateMap(lenOfMap){
@@ -302,11 +302,45 @@ function createElementFromHTML(htmlString) {
             var elem = document.querySelector('.hero');
             elem.onclick= function(){
                 battlemanager.hero.getInfo();
+                if(battlemanager.lastclicked!='hero'){
+                    battlemanager.lastclicked='hero';
+                }
+                console.log(battlemanager.lastclicked)
+
             }
             elem =document.querySelector('.enemy');
             elem.onclick = function(){
                 battlemanager.enemy.getInfo();
+                if(battlemanager.lastclicked!='enemy'){
+                    battlemanager.lastclicked='enemy';
+                }
+                console.log(battlemanager.lastclicked)
             }
-        
+            elem=document.querySelectorAll('.nothing');
+
+            elem.forEach(ele=>{
+                console.log(ele);
+                ele.onclick= function(){
+
+                    if(battlemanager.lastclicked!='nothing'){
+                        battlemanager.lastclicked='nothing';
+                    }
+                    console.log(battlemanager.lastclicked);
+                }
+            });
+
+            elem=document.querySelectorAll('.thing');
+
+            elem.forEach(ele=>{
+                ele.onclick= function() {
+                    if(battlemanager.lastclicked!='thing'){
+                        battlemanager.lastclicked='thing';
+                    }
+                    console.log(battlemanager.lastclicked);
+    
+                }
+            })
+
         }
+        
 });});
