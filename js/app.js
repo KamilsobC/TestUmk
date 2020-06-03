@@ -19,10 +19,20 @@ class Character {
                 this.hp=0;
             }
         }
-    seePossibleMovment(){
-        for (var i=-1;i<1;i++){
-            console.log()
+    getPossibleMovment(map){
+
+        var possibleMovments=[];
+        for (var i=-1;i<=1;i++){
+            
+            for(var j=-1;j<=1;j++){
+                var movment= [ parseInt(this.pos_q) + parseInt(i),parseInt(this.pos_r) + parseInt(j) ];
+            possibleMovments.push(movment);
+            }
         }
+
+        possibleMovments.forEach(element=>{
+            console.log( element[0] + "  " + element[1]);
+        })
     }
             
         
@@ -55,7 +65,15 @@ class Terrain{
 }
 class Map{
     constructor(tiles){
+        this.tiles=tiles;
+    }
+    getTile(q,r){
+        this.tiles.forEach(element=>{
+            if(element.q==q && element.r ==r ){
+                console.log(element.holds);
+            }
 
+        })
     }
 }
 class Tile{
@@ -69,6 +87,12 @@ class BattleManager{
     constructor(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r){
         this.enemy = new Enemy('goblin',100,enemy_pos_q,enemy_pos_r);
         this.hero = new Hero('hero',10,hero_pos_q,hero_pos_r,1000);
+    }
+    updateMapInfo(tiles){
+        this.map = new Map(tiles);
+    }
+    get Map(){
+        return this.map;
     }
 
 }
@@ -217,14 +241,7 @@ function createElementFromHTML(htmlString) {
         //tworzenie mapy z typów
         var mapInfo=[];
 
-        hexes.forEach(element=>{
 
-            var proper = element.firstChild.firstChild.firstChild;
-            var q=element.getAttribute('data-q');
-            var r=element.getAttribute('data-r');
-
-        })
-        
         hexes.forEach(element =>{
 
                 var proper = element.firstChild.firstChild.firstChild;
@@ -257,6 +274,16 @@ function createElementFromHTML(htmlString) {
                 
         });
 
+        //info mapka
+        hexes.forEach(element=>{
+
+            var proper = element.firstChild.firstChild.firstChild;
+            var q=element.getAttribute('data-q');
+            var r=element.getAttribute('data-r');
+            var newTile = new Tile(q,r,proper.lastChild);
+            mapInfo.push(newTile);
+        })
+        
         //twrozenie podłoża
         var t = new Array(hexmap.hexes.length);
 		for(var i = 0; i < hexmap.hexes.length; i++){
@@ -270,11 +297,10 @@ function createElementFromHTML(htmlString) {
         addAnchors();
         nextTurnUpdate();
         const battlemanager = new BattleManager(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r)
+        battlemanager.updateMapInfo(mapInfo);
         console.log(battlemanager.enemy.pos_q);
         console.log(battlemanager.enemy.pos_r);
         console.log(battlemanager.hero.pos_q);
         console.log(battlemanager.hero.pos_r);
-
-
-	});
-});
+        battlemanager.hero.getPossibleMovment(battlemanager.Map);
+});});
