@@ -11,6 +11,7 @@ class Character {
         this.pos_r=pos_r;
         this.movment=1;
         this.range=1;
+        this.possibleTiles=[];
     }
 
     takeDamage(amount) {
@@ -25,13 +26,21 @@ class Character {
         for (var i=-1;i<=1;i++){
             
             for(var j=-1;j<=1;j++){
-                var movment= [ parseInt(this.pos_q) + parseInt(i),parseInt(this.pos_r) + parseInt(j) ];
+                var movment= [parseInt(this.pos_r) + parseInt(j), parseInt(this.pos_q) + parseInt(i) ];
             possibleMovments.push(movment);
             }
         }
 
         possibleMovments.forEach(element=>{
-            console.log( element[0] + "  " + element[1]);
+            
+            map.tiles.forEach(tile=>{
+                if  (element[1]==tile.q && element[0]==tile.r){
+                    this.possibleTiles.push(element);
+                }   
+            })
+        })
+        this.possibleTiles.forEach(el =>{
+            console.log(el);
         })
     }
             
