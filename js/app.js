@@ -13,7 +13,7 @@ class Character {
     }
 
     takeDamage(amount) {
-            this.hp=this.hp-amount;
+            this.hp=this.hp-parseInt(amount);
             if (this.hp<=0){
                 this.hp=0;
             }
@@ -44,7 +44,11 @@ class Character {
     getInfo(){
         console.log('name ' + this.name + ' hp: ' + this.hp + ' pos r:' + this.pos_r + ' pos q' + this.pos_q);
     }
-        
+    move(q,r){
+        this.pos_q=q;
+        this.pos_r=r;
+
+    }   
     
 }
 class Hero extends Character{
@@ -91,12 +95,14 @@ class Tile{
         this.r=r;
         this.holds=holds;
     }
+    info(){
+        'r: '+ this.r + ' q:' +this.q + ' holds:' +this.holds }
 }
 class BattleManager{
 
     constructor(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r){
         this.enemy = new Enemy('goblin',100,enemy_pos_q,enemy_pos_r);
-        this.hero = new Hero('hero',10,hero_pos_q,hero_pos_r,1000);
+        this.hero = new Hero('hero',100,hero_pos_q,hero_pos_r,1000);
         this.lastclicked =null;
     }
     updateMapInfo(tiles){
@@ -106,6 +112,42 @@ class BattleManager{
         return this.map;
     }
 
+    changelastClick(newSelect){
+        this.previousClick= this.lastclicked;
+        this.lastclicked= newSelect;
+        
+        if (this.previousClick=='hero' && this.lastclicked == 'enemy'){
+                this.enemy.takeDamage(30);
+                this.changeHP('enemy');
+        }
+        if (this.previousClick=='enemy' && this.lastclicked == 'hero'){
+            this.hero.takeDamage(30);
+            this.changeHP('hero');
+        
+        if (this.previousClick=='hero' && this.lastclicked == 'nothing'){
+            
+        }
+    }
+    }
+
+    changeHP(character){
+        var idstring = character + 'hp';
+        console.log(idstring);
+        var hpbars= document.getElementsByClassName(idstring);
+        console.log(hpbars);
+        for (let hpbar of hpbars){
+            if(character=='enemy'){
+                hpbar.innerText=this.enemy.hp + "%";
+            }
+            else if (character=='hero'){
+                hpbar.innerText=this.hero.hp + "%";
+            }
+    
+            console.log(hpbar);
+
+        }
+
+    }
     
 
 }
@@ -114,10 +156,11 @@ class BattleManager{
 //
 //
 const TREE =createElementFromHTML( "<div class=\"thing\"> <div class=\"tree \"> <img src=\'img/tree.png\'/> </div> </div>");
-const HERO = createElementFromHTML( "<div class=\"character\" > <div class=\"hero \"><div class='hpbg'><div id='herohp'>100%</div></div><img src=\'img/hero.png\'/> </div> </div>");
-const ENEMY = createElementFromHTML( "<div class=\"character\"  > <div class=\"enemy \"><div class='hpbg'><div id='enemyhp'>100</div></div> <img src=\'img/enemy.png\'/> </div> </div>");
+const HERO = createElementFromHTML( "<div class=\"character\" > <div class=\"hero \"><div class='hpbg'><div class='herohp'>100</div></div><img src=\'img/hero.png\'/> </div> </div>");
+const ENEMY = createElementFromHTML( "<div class=\"character\"  > <div class=\"enemy \"><div class='hpbg'><div class='enemyhp'>100</div></div> <img src=\'img/enemy.png\'/> </div> </div>");
 const EMPTY = createElementFromHTML("<div class=\"nothing\"  ><img src=\'img/empty.png\'/></div>")
 
+ 
 function nextTurnUpdate(){
     //TODO
     var elements = document.getElementsByClassName('nextchar');
@@ -298,48 +341,48 @@ function createElementFromHTML(htmlString) {
         battlemanager.updateMapInfo(mapInfo);
         battlemanager.hero.getPossibleMovment(battlemanager.Map);
         populateChars();
+
         function populateChars(){
             var elem = document.querySelector('.hero');
-            elem.onclick= function(){
+            
+            elem.onclick= function(param){
+                param = param.originalTarget.offsetParent.offsetParent;
+                console.log('test')
+                r = param.getAttribute('data-r');
+                q = param.getAttribute('data-q');
                 battlemanager.hero.getInfo();
-                if(battlemanager.lastclicked!='hero'){
-                    battlemanager.lastclicked='hero';
-                }
-                console.log(battlemanager.lastclicked)
+                battlemanager.changelastClick('hero');
 
+                var newTile = new Tile(q,r);
+
+                console.log(battlemanager.map.getTile(q,r));
             }
+
             elem =document.querySelector('.enemy');
-            elem.onclick = function(){
+            elem.onclick = function(param){
                 battlemanager.enemy.getInfo();
-                if(battlemanager.lastclicked!='enemy'){
-                    battlemanager.lastclicked='enemy';
-                }
+                battlemanager.changelastClick('enemy');
                 console.log(battlemanager.lastclicked)
+                console.log(battlemanager.previousClick);
             }
             elem=document.querySelectorAll('.nothing');
-
             elem.forEach(ele=>{
-                console.log(ele);
-                ele.onclick= function(){
-
-                    if(battlemanager.lastclicked!='nothing'){
-                        battlemanager.lastclicked='nothing';
-                    }
+                ele.onclick= function(param){
+                    battlemanager.changelastClick('nothing');
                     console.log(battlemanager.lastclicked);
+                    console.log(battlemanager.previousClick);
                 }
             });
 
             elem=document.querySelectorAll('.thing');
 
             elem.forEach(ele=>{
-                ele.onclick= function() {
-                    if(battlemanager.lastclicked!='thing'){
-                        battlemanager.lastclicked='thing';
-                    }
-                    console.log(battlemanager.lastclicked);
-    
+                ele.onclick = function(param) {
+                        battlemanager.changelastClick('thing');
+                        console.log(battlemanager.lastclicked);
+                        console.log(battlemanager.previousClick);
                 }
-            })
+            });
 
         }
         

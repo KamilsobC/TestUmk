@@ -61,7 +61,7 @@
 }
 
 
-#herohp,#enemyhp{
+.herohp,.enemyhp{
 	background-color: greenyellow;
 	width: 100%;
 	
