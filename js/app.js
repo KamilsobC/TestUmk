@@ -1,7 +1,5 @@
-//
-// 
-//
-//
+
+
 class Character {
     constructor(name,hp,pos_q,pos_r){
         this.name=name;
@@ -43,7 +41,9 @@ class Character {
             console.log(el);
         })
     }
-            
+    getInfo(){
+        console.log('name ' + this.name + ' hp: ' + this.hp + ' pos r:' + this.pos_r + ' pos q' + this.pos_q);
+    }
         
     
 }
@@ -110,32 +110,22 @@ class BattleManager{
 //
 //
 const TREE =createElementFromHTML( "<div class=\"thing\"> <div class=\"tree \"> <img src=\'img/tree.png\'/> </div> </div>");
-const HERO = createElementFromHTML( "<div class=\"character\"> <div class=\"hero \"><div class='hpbg'><div id='herohp'>100%</div></div><img src=\'img/hero.png\'/> </div> </div>");
-const ENEMY = createElementFromHTML( "<div class=\"character\"> <div class=\"enemy \"><div class='hpbg'><div id='enemyhp'>100</div></div> <img src=\'img/enemy.png\'/> </div> </div>");
+const HERO = createElementFromHTML( "<div class=\"character\" > <div class=\"hero \"><div class='hpbg'><div id='herohp'>100%</div></div><img src=\'img/hero.png\'/> </div> </div>");
+const ENEMY = createElementFromHTML( "<div class=\"character\"  > <div class=\"enemy \"><div class='hpbg'><div id='enemyhp'>100</div></div> <img src=\'img/enemy.png\'/> </div> </div>");
 const EMPTY = createElementFromHTML("<div ></div>")
 
 function nextTurnUpdate(){
     //TODO
     var elements = document.getElementsByClassName('nextchar');
-    console.log(elements);
     for (var i=0;i<elements.length;i++){
 
     }
 }
 
-function addAnchors(){
-    var anchors = document.getElementsByClassName('character');
-    for(var i = 0; i < anchors.length; i++) {
-        var anchor = anchors[i];
-        var anchor = anchor.parentElement.parentElement.parentElement.parentElement
-        anchor.onclick = function() {
-            console.log(anchor.getAttribute("data-r"));
-            console.log(anchor.getAttribute("data-q"));
-        
-        }
-    }
+function getinfo(element){
+    console.log(element);
+    console.log(element.children[0].getAttribute('class'));
 }
-
 function getRandom( from,to,round) {
 
     var result = from + (Math.random()*(to-from));
@@ -241,15 +231,14 @@ function createElementFromHTML(htmlString) {
         
         };
 
-
         var result = generateMap(dataids.length)
         var terrains = ['hills','pasture','mountains','fields','forest'];
         var hexes = document.querySelectorAll('.hex');
 
         var hero_pos_q,hero_pos_r,enemy_pos_q,enemy_pos_r;
+
         //tworzenie mapy z typów
         var mapInfo=[];
-
 
         hexes.forEach(element =>{
 
@@ -283,7 +272,7 @@ function createElementFromHTML(htmlString) {
                 
         });
 
-        //info mapka
+        //info mapa
         hexes.forEach(element=>{
 
             var proper = element.firstChild.firstChild.firstChild;
@@ -303,13 +292,9 @@ function createElementFromHTML(htmlString) {
 		for(var i = 0; i < hexmap.hexes.length; i++){
             if(hexmap.hexes[i].n ) hexmap.hexes[i].setClass(t[i]);
         }
-        addAnchors();
         nextTurnUpdate();
         const battlemanager = new BattleManager(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r)
         battlemanager.updateMapInfo(mapInfo);
-        console.log(battlemanager.enemy.pos_q);
-        console.log(battlemanager.enemy.pos_r);
-        console.log(battlemanager.hero.pos_q);
-        console.log(battlemanager.hero.pos_r);
         battlemanager.hero.getPossibleMovment(battlemanager.Map);
+
 });});
