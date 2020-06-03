@@ -1,0 +1,114 @@
+.ex-8 {
+	background: #66bbe2;
+	padding: 6% 10%;
+	margin: auto;
+	clip-path: polygon(0% 50%, 25% 100%, 75% 100%, 100% 50%, 75% 0%, 25% 0%);
+	display: flex;
+	flex-direction: column;
+}
+.token {
+	font-family: serif;
+	border-radius: 100%;
+	background-color: wheat;
+	width: 4em;
+	height: 4em;
+	color: black;
+	display: table-cell;
+	vertical-align: middle;
+}
+.token.token-red { color: crimson; }
+.token .id, .token .odds { font-size: 1em; }
+.token .dice { font-size: 2em; }
+.hills { background: #c8906e !important; }
+.pasture { background: #b5c881!important; }
+.mountains { background: #778088 !important; }
+.fields { background: #e9b66c !important; }
+.forest { background: #55855f !important; }
+.desert { background: #f5dcad !important; }
+
+
+.main {
+	background-color: #778088 ;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+}
+
+#charscreen {
+	/* background-color: lightcoral; */
+	width: 15%;
+	display:flex;
+}
+
+#queue{
+	background-color: lightblue;
+	height: 100px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.hex:hover{
+	background-color: red;
+}
+
+#herohp,#enemyhp{
+	background-color: greenyellow;
+	width: 100%;
+	
+}
+.hpbg{
+	background-color: white;
+	width:100%;
+	border: 1px solid black;
+}
+
+#charinfo{
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.herostat{
+	background-color: lightblue;
+	border:  1px solid black;
+	width: 90%;
+	margin: 5%;
+	justify-content: center;
+	display: flex;
+}
+#heroimg{
+	width: 64px;
+	height: 64px;
+	border:  1px solid black;
+}
+
+.nextchar{
+	background-color: #b5c881;
+	width: 64px;
+	height: 100%;
+	margin: 0% 0% 0% 2%;
+	border: 1px solid black ;
+}
+.inventory{
+	display: grid;
+	grid-template-columns: 50% 50%;
+}
+
+.item{
+background-color: #c8906e;
+width: 64px;
+height: 64px;
+border: 1px solid black;
+}
+
+.abilities{
+	display: grid;
+	grid-template-columns: 50% 50%;
+}
+.ability{
+	background-color: #f5dcad;
+	width: 64px;
+	height: 64px;
+	border: 1px solid black;
+}
