@@ -93,9 +93,11 @@ class Tile{
     }
 }
 class BattleManager{
+
     constructor(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r){
         this.enemy = new Enemy('goblin',100,enemy_pos_q,enemy_pos_r);
         this.hero = new Hero('hero',10,hero_pos_q,hero_pos_r,1000);
+       
     }
     updateMapInfo(tiles){
         this.map = new Map(tiles);
@@ -103,6 +105,8 @@ class BattleManager{
     get Map(){
         return this.map;
     }
+
+    
 
 }
 // 
@@ -146,7 +150,9 @@ function createElementFromHTML(htmlString) {
   
     // Change this to div.childNodes to support multiple top-level nodes
     return div.firstChild; 
-  }
+  
+}
+
   S(document).ready(function(){
 
 
@@ -187,8 +193,6 @@ function createElementFromHTML(htmlString) {
 
 	// Create button which randomises the terrain
 	S('#button-8-terrain').on('click',function(){
-        var dataids =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','P','Q','R','S'];
-
         function generateMap(lenOfMap){
 
             var treecnt=4;
@@ -230,16 +234,14 @@ function createElementFromHTML(htmlString) {
             return list_of_elems;
         
         };
-
+        var dataids =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','P','Q','R','S'];
         var result = generateMap(dataids.length)
         var terrains = ['hills','pasture','mountains','fields','forest'];
         var hexes = document.querySelectorAll('.hex');
-
         var hero_pos_q,hero_pos_r,enemy_pos_q,enemy_pos_r;
 
         //tworzenie mapy z typów
         var mapInfo=[];
-
         hexes.forEach(element =>{
 
                 var proper = element.firstChild.firstChild.firstChild;
@@ -271,7 +273,6 @@ function createElementFromHTML(htmlString) {
                 }
                 
         });
-
         //info mapa
         hexes.forEach(element=>{
 
@@ -282,7 +283,7 @@ function createElementFromHTML(htmlString) {
             mapInfo.push(newTile);
         })
         
-        //twrozenie podłoża
+        //tworzenie podłoża
         var t = new Array(hexmap.hexes.length);
 		for(var i = 0; i < hexmap.hexes.length; i++){
             t[i] = terrains[Math.floor(Math.random()*terrains.length)];
@@ -296,5 +297,16 @@ function createElementFromHTML(htmlString) {
         const battlemanager = new BattleManager(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r)
         battlemanager.updateMapInfo(mapInfo);
         battlemanager.hero.getPossibleMovment(battlemanager.Map);
-
+        populateChars();
+        function populateChars(){
+            var elem = document.querySelector('.hero');
+            elem.onclick= function(){
+                battlemanager.hero.getInfo();
+            }
+            elem =document.querySelector('.enemy');
+            elem.onclick = function(){
+                battlemanager.enemy.getInfo();
+            }
+        
+        }
 });});
