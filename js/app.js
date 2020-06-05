@@ -19,12 +19,16 @@ class Character {
             }
         }
     getPossibleMovment(map){
-
+        console.log(this.pos_q);
+        console.log(this.pos_r);
+        console.log('map ' + this.map);
+        this.possibleTiles=[];
         var possibleMovments=[];
+
         for (var i=-1;i<=1;i++){
             
             for(var j=-1;j<=1;j++){
-                var movment= [parseInt(this.pos_r) + parseInt(j), parseInt(this.pos_q) + parseInt(i) ];
+                var movment= [parseInt(this.pos_q) + parseInt(i),parseInt(this.pos_r) + parseInt(j) ];
             possibleMovments.push(movment);
             }
         }
@@ -32,13 +36,18 @@ class Character {
         possibleMovments.forEach(element=>{
             
             map.tiles.forEach(tile=>{
-                if  (element[1]==tile.q && element[0]==tile.r){
-                    this.possibleTiles.push(element);
+
+                if  (element[0]==tile.q && element[1]==tile.r){
+                      
+                        if  (element[0]!=this.pos_q && element[1]!=this.pos_r){
+                            console.log(element);
+                            this.possibleTiles.push(element);
+                        }
+                    
                 }   
             })
         })
         this.possibleTiles.forEach(el =>{
-            console.log(el);
         })
     }
     getInfo(){
@@ -84,6 +93,7 @@ class Map{
         this.tiles.forEach(element=>{
             if(element.q==q && element.r ==r ){
                 console.log(element.holds);
+                return element.holds;
             }
 
         })
@@ -100,10 +110,17 @@ class Tile{
 }
 class BattleManager{
 
-    constructor(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r){
+    constructor(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r,map_info){
         this.enemy = new Enemy('goblin',100,enemy_pos_q,enemy_pos_r);
         this.hero = new Hero('hero',100,hero_pos_q,hero_pos_r,1000);
         this.lastclicked =null;
+        this.updateMapInfo(map_info);
+        this.hero.getPossibleMovment(this.Map);
+        this.enemy.getPossibleMovment(this.Map);
+        console.log(this.hero.possibleTiles);
+        this.hero.possibleTiles.forEach(el=>{
+            this.Map.getTile(el[0],el[1]);
+        })
     }
     updateMapInfo(tiles){
         this.map = new Map(tiles);
@@ -115,7 +132,9 @@ class BattleManager{
     changelastClick(newSelect){
         this.previousClick= this.lastclicked;
         this.lastclicked= newSelect;
-        
+
+        console.log(this.lastclicked)
+        console.log(this.previousClick);
         if (this.previousClick=='hero' && this.lastclicked == 'enemy'){
                 this.enemy.takeDamage(30);
                 this.changeHP('enemy');
@@ -125,16 +144,14 @@ class BattleManager{
             this.changeHP('hero');
         
         if (this.previousClick=='hero' && this.lastclicked == 'nothing'){
-            
+            console.log(this.hero.possibleTiles);
         }
     }
     }
 
     changeHP(character){
         var idstring = character + 'hp';
-        console.log(idstring);
         var hpbars= document.getElementsByClassName(idstring);
-        console.log(hpbars);
         for (let hpbar of hpbars){
             if(character=='enemy'){
                 hpbar.innerText=this.enemy.hp + "%";
@@ -142,8 +159,6 @@ class BattleManager{
             else if (character=='hero'){
                 hpbar.innerText=this.hero.hp + "%";
             }
-    
-            console.log(hpbar);
 
         }
 
@@ -337,40 +352,41 @@ function createElementFromHTML(htmlString) {
             if(hexmap.hexes[i].n ) hexmap.hexes[i].setClass(t[i]);
         }
         nextTurnUpdate();
-        const battlemanager = new BattleManager(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r)
-        battlemanager.updateMapInfo(mapInfo);
-        battlemanager.hero.getPossibleMovment(battlemanager.Map);
+        const battlemanager = new BattleManager(enemy_pos_q,enemy_pos_r,hero_pos_q,hero_pos_r,mapInfo)
         populateChars();
 
         function populateChars(){
+
+            function getqr(param){
+                param = param.originalTarget.offsetParent.offsetParent;
+                r = param.getAttribute('data-r');
+                q = param.getAttribute('data-q');
+                return [q,r]
+            }
+
             var elem = document.querySelector('.hero');
             
             elem.onclick= function(param){
-                param = param.originalTarget.offsetParent.offsetParent;
-                console.log('test')
-                r = param.getAttribute('data-r');
-                q = param.getAttribute('data-q');
+                var qr = getqr(param);
                 battlemanager.hero.getInfo();
                 battlemanager.changelastClick('hero');
-
                 var newTile = new Tile(q,r);
-
-                console.log(battlemanager.map.getTile(q,r));
+                console.log(qr[0],qr[1])
             }
 
             elem =document.querySelector('.enemy');
             elem.onclick = function(param){
+                var qr = getqr(param);
                 battlemanager.enemy.getInfo();
                 battlemanager.changelastClick('enemy');
-                console.log(battlemanager.lastclicked)
-                console.log(battlemanager.previousClick);
+                console.log(qr[0],qr[1])
             }
             elem=document.querySelectorAll('.nothing');
             elem.forEach(ele=>{
                 ele.onclick= function(param){
                     battlemanager.changelastClick('nothing');
-                    console.log(battlemanager.lastclicked);
-                    console.log(battlemanager.previousClick);
+                    var qr = getqr(param);
+                    console.log(qr[0],qr[1])
                 }
             });
 
@@ -379,8 +395,8 @@ function createElementFromHTML(htmlString) {
             elem.forEach(ele=>{
                 ele.onclick = function(param) {
                         battlemanager.changelastClick('thing');
-                        console.log(battlemanager.lastclicked);
-                        console.log(battlemanager.previousClick);
+                        var qr = getqr(param);
+                        console.log(qr[0],qr[1])
                 }
             });
 
