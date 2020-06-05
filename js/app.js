@@ -19,9 +19,6 @@ class Character {
             }
         }
     getPossibleMovment(map){
-        console.log(this.pos_q);
-        console.log(this.pos_r);
-        console.log('map ' + this.map);
         this.possibleTiles=[];
         var possibleMovments=[];
 
@@ -35,12 +32,11 @@ class Character {
 
         possibleMovments.forEach(element=>{
             
-            map.tiles.forEach(tile=>{
+            map.forEach(tile=>{
 
-                if  (element[0]==tile.q && element[1]==tile.r){
+                if  (element[0]!=this.posq_q && element[1]!=this.pos_r){
                       
                         if  (element[0]!=this.pos_q && element[1]!=this.pos_r){
-                            console.log(element);
                             this.possibleTiles.push(element);
                         }
                     
@@ -92,7 +88,6 @@ class Map{
     getTile(q,r){
         this.tiles.forEach(element=>{
             if(element.q==q && element.r ==r ){
-                console.log(element.holds);
                 return element.holds;
             }
 
@@ -115,9 +110,8 @@ class BattleManager{
         this.hero = new Hero('hero',100,hero_pos_q,hero_pos_r,1000);
         this.lastclicked =null;
         this.updateMapInfo(map_info);
-        this.hero.getPossibleMovment(this.Map);
-        this.enemy.getPossibleMovment(this.Map);
-        console.log(this.hero.possibleTiles);
+        this.hero.getPossibleMovment(this.Map.tiles);
+        this.enemy.getPossibleMovment(this.Map.tiles);
         this.hero.possibleTiles.forEach(el=>{
             this.Map.getTile(el[0],el[1]);
         })
@@ -128,7 +122,10 @@ class BattleManager{
     get Map(){
         return this.map;
     }
-
+    resetClicks(){
+        this.previousClick='nothing';
+        this.lastclicked='nothing';
+    }
     changelastClick(newSelect){
         this.previousClick= this.lastclicked;
         this.lastclicked= newSelect;
@@ -138,13 +135,18 @@ class BattleManager{
         if (this.previousClick=='hero' && this.lastclicked == 'enemy'){
                 this.enemy.takeDamage(30);
                 this.changeHP('enemy');
+                this.resetClicks();
         }
         if (this.previousClick=='enemy' && this.lastclicked == 'hero'){
             this.hero.takeDamage(30);
             this.changeHP('hero');
+            this.resetClicks();
+
         
         if (this.previousClick=='hero' && this.lastclicked == 'nothing'){
             console.log(this.hero.possibleTiles);
+            this.resetClicks();
+
         }
     }
     }
@@ -332,6 +334,8 @@ function createElementFromHTML(htmlString) {
                 
         });
         //info mapa
+        function updateMap()
+        {};
         hexes.forEach(element=>{
 
             var proper = element.firstChild.firstChild.firstChild;
